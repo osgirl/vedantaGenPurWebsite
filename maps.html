@@ -1,0 +1,262 @@
+  <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<head>
+<link type="text/css" href="css/maps.css" rel="stylesheet">
+
+		<title>Maps</title>
+        <link rel="stylesheet" type="text/css" href="materialize/css/materialize.min.css">
+         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script src="https://maps.googleapis.com/maps/api/js"></script>
+
+</head>
+<body>
+    <ul id="dropdown1" class="dropdown-content">
+  <li><a href="SesaHistory.html">Sesa Sterlite</a></li>
+  <li><a href="Corporate.html">Corporate</a></li> 
+</ul>
+ <ul id="dropdown2" class="dropdown-content">
+  <li><a href="Shopping.html">Jharsuguda</a></li>
+  <li><a href="Township.html">Township</a></li> 
+</ul>
+	
+<div class="navbar-fixed">
+<nav class="##ffb74d orange lighten-2">
+    <div class="nav-wrapper">
+      <a href="genpur.html" class="brand-logo"><img src="images/vedantalogo.png" width="212" height="65" alt="Vedanta"></a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li><a href="Guest_house.html">Accomodation</a></li>
+        <li><a class="dropdown-button" href="#!" data-activates="dropdown1">History <img src="images/arrow_down_new.png" width="14" height="14" alt=""></a></li>
+                
+        <li><a class="dropdown-button" href="#!" data-activates="dropdown2">Get Around <img src="images/arrow_down_new.png" width="14" height="14" alt=""></a></li>
+        <li><a href="maps.html">Location</a></li>
+        <li><a href="Tourism.html">Tourism</a></li>
+      </ul>
+    </div>
+  </nav>
+  </div>
+  
+    </div>
+	<script>
+	if (!navigator.geolocation){
+        output.innerHTML = "<p>Geolocation is not supported by your browser</p>";
+        return;
+    }
+    var options = {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+    };
+  	function initialize() {
+  		var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
+        alert(latitude);
+		var mapCanvas = document.getElementById('map-canvas');
+		var mapOptions = {
+      			center: new google.maps.LatLng(latitude,longitude),
+      			zoom: 14,
+      			mapTypeId: google.maps.MapTypeId.ROADMAP
+    			}
+   var map = new google.maps.Map(mapCanvas, mapOptions,icons);
+		map.set('styles', [
+	  {
+	    featureType: 'road',
+	    elementType: 'geometry',
+	    stylers: [
+	      { color: '#CCCCCC' },
+	      { weight: 1.6 }
+	    ]
+	  }, {
+	    featureType: 'road',
+	    elementType: 'labels',
+	    stylers: [
+	      { saturation: -100 },
+	      { invert_lightness: true }
+	    ]
+	  }, {
+	    featureType: 'landscape',
+	    elementType: 'geometry',
+	    stylers: [
+	      { hue: '#ffff00' },
+	      { gamma: 1.4 },
+	      { saturation: 82 },
+	      { lightness: 96 }
+	    ]
+	  },{
+	  featureType: 'poi.attraction',
+	  elementType: 'geometry',
+	  stylers: [
+	    { visibility: 'on' },
+	    { color: '#00ffff' },
+	    { lightness: 50 },
+	    { saturation: 99 }
+	  ]
+	}
+	
+	]);
+	
+	var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+		var icons = {
+		  parking: {
+		    icon: iconBase + 'parking_lot_maps.png',
+			name:' Parking'
+		  },
+		  library: {
+		    icon: iconBase + 'library_maps.png',
+			name:'Library'
+		  },
+  	 	  info: {
+  		    icon: iconBase + 'info-i_maps.png',
+			name: 'info'
+  		  },
+		  Canteen: {
+		    icon: 'images/canteen.png',
+			name: 'Canteen'
+
+		    
+		  }	,
+		  MyLocation: {
+		    icon: 'images/MyLoc.png',
+			name: 'Your Location'
+		}
+		};
+
+		function addMarker(feature) {
+		    var marker = new google.maps.Marker({
+		    position: feature.position,
+		    icon: icons[feature.type].icon,
+		    map: map
+		  });
+		}
+		
+		var features = [
+          {
+            position: new google.maps.LatLng(21.816420, 84.037243),
+            type: 'Canteen'
+          }
+		  ]
+		  
+		   for (var i = 0, feature; feature = features[i]; i++) {
+          addMarker(feature);
+        }
+	
+	var legend = document.getElementById('legend');
+        for (var key in icons) {
+          var type = icons[key];
+          var name = type.name;
+          var icon = type.icon;
+          var div = document.createElement('div');
+          div.innerHTML = '<img src="' + icon + '">' + type.name;
+		  
+          legend.appendChild(div);
+        }
+
+	map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
+
+}
+  	function error() {
+        output.innerHTML = "Unable to retrieve your location";
+    };
+navigator.geolocation.getCurrentPosition(initialize,error,options);
+
+	
+
+
+	//permission
+	function prompt(window, pref, message, callback) {
+    let branch = Components.classes["@mozilla.org/preferences-service;1"]
+                           .getService(Components.interfaces.nsIPrefBranch);
+
+    if (branch.getPrefType(pref) === branch.PREF_STRING) {
+        switch (branch.getCharPref(pref)) {
+        case "always":
+            return callback(true);
+        case "never":
+            return callback(false);
+        }
+    }
+
+    let done = false;
+
+    function remember(value, result) {
+        return function() {
+            done = true;
+            branch.setCharPref(pref, value);
+            callback(result);
+        }
+    }
+
+    let self = window.PopupNotifications.show(
+        window.gBrowser.selectedBrowser,
+        "geolocation",
+        message,
+        "geo-notification-icon",
+        {
+            label: "Share Location",
+            accessKey: "S",
+            callback: function(notification) {
+                done = true;
+                callback(true);
+            }
+        }, [
+            {
+                label: "Always Share",
+                accessKey: "A",
+                callback: remember("always", true)
+            },
+            {
+                label: "Never Share",
+                accessKey: "N",
+                callback: remember("never", false)
+            }
+        ], {
+            eventCallback: function(event) {
+                if (event === "dismissed") {
+                    if (!done) callback(false);
+                    done = true;
+                    window.PopupNotifications.remove(self);
+                }
+            },
+            persistWhileVisible: true
+        });
+}
+
+
+prompt(window,
+       "extensions.foo-addon.allowGeolocation",
+       "Foo Add-on wants to know your location.",
+       function callback(allowed) { alert(allowed); });
+</script>
+    <div class="container"><div id="map-canvas" ></div>
+	<div id="legend" >
+   legend
+    </div></div>
+    
+<div class="#26a69a teal lighten-1">
+<footer class="page-footer #26a69a teal lighten-1">
+          <div class="container">
+            <div class="row">
+              <div class="col l6 s12">
+                <h5 class="white-text">Vedanta</h5>
+                <p class="grey-text text-lighten-4">Mining Happiness</p>
+              </div>
+              <div class="col l4 offset-l2 s12">
+                <h5 class="white-text"><a href="https://www.vedantaaluminium.com"></a></h5>
+                <ul>
+                  <li><a class="grey-text text-lighten-3" href="https://www.vedantaresources.com">www.vedantaresources.com</a></li>
+                  <li><a class="grey-text text-lighten-3" href="https://www.vedantaaluminium.com">www.vedantaaluminium.com</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="footer-copyright">
+            <div class="container">
+            © 2014 Copyright Text
+            <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+            </div>
+          </div>
+        </footer>
+        </div>
+        <script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="materialize/js/materialize.min.js"></script>
+</body>
+</html>
+    
